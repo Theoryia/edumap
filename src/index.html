@@ -10,48 +10,101 @@
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
           crossorigin=""/>
     
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-        }
-        #map {
-            width: 100%;
-            height: 100vh;
-        }
-        .ship-info {
-            padding: 6px 8px;
-            background: white;
-            background: rgba(255, 255, 255, 0.8);
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-            border-radius: 5px;
-        }
-        .legend {
-            line-height: 18px;
-            color: #555;
-            background: white;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        .legend i {
-            width: 18px;
-            height: 18px;
-            float: left;
-            margin-right: 8px;
-            opacity: 0.7;
-        }
-    </style>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles/style.css">
 </head>
 <body>
-    <div id="map"></div>
+    <div class="dashboard">
+        <!-- Left side - Map Card -->
+        <div class="main-card">
+            <div class="card-header">
+                <div class="fullscreen-btn" id="fullscreen-btn">
+                    <i class="fas fa-expand"></i>
+                </div>
+            </div>
+            <div class="card-content" id="map-container">
+                <div id="map"></div>
+            </div>
+        </div>
+        
+        <!-- Right side - Visualization Cards -->
+        <div class="viz-cards">
+            <div class="viz-card">
+                <!-- Future visualization 1 -->
+            </div>
+            <div class="viz-card">
+                <!-- Future visualization 2 -->
+            </div>
+            <div class="viz-card">
+                <!-- Future visualization 3 -->
+            </div>
+            <div class="viz-card">
+                <!-- Future visualization 4 -->
+            </div>
+        </div>
+    </div>
     
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
             crossorigin=""></script>
     
-    <!-- Changed paths to match your directory structure -->
-    <script src="/src/js/app.js"></script>
+    <!-- App JavaScript -->
+    <script src="js/app.js"></script>
+    
+    <!-- Fullscreen functionality -->
+    <script>
+        document.getElementById('fullscreen-btn').addEventListener('click', function() {
+            const mapContainer = document.getElementById('map-container');
+            
+            if (!document.fullscreenElement) {
+                if (mapContainer.requestFullscreen) {
+                    mapContainer.requestFullscreen();
+                } else if (mapContainer.mozRequestFullScreen) { /* Firefox */
+                    mapContainer.mozRequestFullScreen();
+                } else if (mapContainer.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
+                    mapContainer.webkitRequestFullscreen();
+                } else if (mapContainer.msRequestFullscreen) { /* IE/Edge */
+                    mapContainer.msRequestFullscreen();
+                }
+                this.querySelector('i').classList.remove('fa-expand');
+                this.querySelector('i').classList.add('fa-compress');
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+                this.querySelector('i').classList.remove('fa-compress');
+                this.querySelector('i').classList.add('fa-expand');
+            }
+        });
+        
+        // Handle fullscreen change
+        document.addEventListener('fullscreenchange', updateFullscreenButton);
+        document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
+        document.addEventListener('mozfullscreenchange', updateFullscreenButton);
+        document.addEventListener('MSFullscreenChange', updateFullscreenButton);
+        
+        function updateFullscreenButton() {
+            const button = document.getElementById('fullscreen-btn');
+            const icon = button.querySelector('i');
+            
+            if (document.fullscreenElement) {
+                icon.classList.remove('fa-expand');
+                icon.classList.add('fa-compress');
+            } else {
+                icon.classList.remove('fa-compress');
+                icon.classList.add('fa-expand');
+            }
+        }
+    </script>
 </body>
 </html>

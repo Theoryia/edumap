@@ -1,4 +1,4 @@
-// Initialize the map centered on Portsmouth port coordinates with disabled interactions and increased zoom
+// Initialize the map centered on Portsmouth port coordinates with disabled interactions
 const map = L.map('map', {
     center: [50.811864632873956, -1.0974481520177604],
     zoom: 30, // Just a placeholder, actual zoom set in setView
@@ -9,13 +9,16 @@ const map = L.map('map', {
     touchZoom: false,
     keyboard: false,
     boxZoom: false
-}).setView([50.811864632873956, -1.0974481520177604], 15.5); // Increased zoom from 14.7
+}).setView([50.811864632873956, -1.0974481520177604], 15.5);
 
 // Add OpenStreetMap tile layer
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     maxZoom: 19
 }).addTo(map);
+
+// Global storage for ship markers to enable updates
+const shipMarkers = new Map(); // Using a Map to store markers by ship name
 
 // Add berth locations
 const berthLocations = {
@@ -131,34 +134,78 @@ function createShipIcon(ship) {
     });
 }
 
-// Display ships from the JSON data
-function displayShips(ships) {
-    // Check if ships data exists
+// Update ship markers based on new data
+function updateShips(ships) {
     if (!ships || !Array.isArray(ships)) {
         console.error('Ships data not found or invalid!');
         return;
     }
-
-    // Loop through ships data and add markers to the map
+    
+    // Get current ship names from the new data
+    const currentShipNames = new Set(ships.map(ship => ship.name));
+    
+    // Remove ships that are no longer in the data
+    for (const [shipName, marker] of shipMarkers.entries()) {
+        if (!currentShipNames.has(shipName)) {
+            marker.remove();
+            shipMarkers.delete(shipName);
+            console.log(`Ship removed: ${shipName}`);
+        }
+    }
+    
+    // Update existing ships or add new ones
     ships.forEach(ship => {
-        const marker = L.marker([ship.latitude, ship.longitude], {
-            icon: createShipIcon(ship),
-            title: ship.name
-        }).addTo(map);
-
-        // Add popup with ship information
-        marker.bindPopup(`
-            <div class="ship-info">
-                <h3>${ship.name}</h3>
-                <p><strong>Type:</strong> ${ship.type}</p>
-                <p><strong>Size:</strong> ${ship.size} units</p>
-                <p><strong>Heading:</strong> ${ship.rotation}°</p>
-                <p><strong>Status:</strong> ${ship.status}</p>
-            </div>
-        `);
+        if (shipMarkers.has(ship.name)) {
+            // Ship exists - update its position and properties
+            const marker = shipMarkers.get(ship.name);
+            
+            // Update position if it changed
+            const newLatLng = L.latLng(ship.latitude, ship.longitude);
+            if (!marker.getLatLng().equals(newLatLng)) {
+                marker.setLatLng(newLatLng);
+                console.log(`Ship moved: ${ship.name}`);
+            }
+            
+            // Update icon if properties changed
+            marker.setIcon(createShipIcon(ship));
+            
+            // Update popup content
+            marker.setPopupContent(`
+                <div class="ship-info">
+                    <h3>${ship.name}</h3>
+                    <p><strong>Type:</strong> ${ship.type}</p>
+                    <p><strong>Size:</strong> ${ship.size} units</p>
+                    <p><strong>Heading:</strong> ${ship.rotation}°</p>
+                    <p><strong>Status:</strong> ${ship.status}</p>
+                </div>
+            `);
+        } else {
+            // New ship - add it to the map
+            const marker = L.marker([ship.latitude, ship.longitude], {
+                icon: createShipIcon(ship),
+                title: ship.name
+            }).addTo(map);
+            
+            // Add popup with ship information
+            marker.bindPopup(`
+                <div class="ship-info">
+                    <h3>${ship.name}</h3>
+                    <p><strong>Type:</strong> ${ship.type}</p>
+                    <p><strong>Size:</strong> ${ship.size} units</p>
+                    <p><strong>Heading:</strong> ${ship.rotation}°</p>
+                    <p><strong>Status:</strong> ${ship.status}</p>
+                </div>
+            `);
+            
+            // Store the new marker
+            shipMarkers.set(ship.name, marker);
+            console.log(`New ship added: ${ship.name}`);
+        }
     });
+}
 
-    // Add legend
+// Setup legend
+function setupLegend() {
     const legend = L.control({position: 'bottomright'});
     legend.onAdd = function() {
         const div = L.DomUtil.create('div', 'legend');
@@ -174,7 +221,7 @@ function displayShips(ships) {
             <div style="display: flex; align-items: center; margin-bottom: 5px;">
                 <svg width="24" height="12" viewBox="0 0 24 12">
                     <path d="M1,6 Q2.5,1 7,1 L17,1 Q21.5,1 23,6 Q21.5,11 17,11 L7,11 Q2.5,11 1,6 Z" fill="#33bb33" stroke="#000" stroke-width="0.5" />
-                    <rect x="7" y="3" width="10" height="6" fill="#fff" stroke="#000" stroke-width="0.3" />
+                    <rect x="7" y="3" width="10" height="6" fill="#fff" />
                 </svg>
                 <span style="margin-left: 8px;">Passenger</span>
             </div>
@@ -191,19 +238,41 @@ function displayShips(ships) {
                 <span style="margin-left: 8px;">Berths</span>
             </div>
             <p>Ship size is proportional to icon size</p>
+            <p>Last update: <span id="update-time">-</span></p>
         `;
         return div;
     };
     legend.addTo(map);
 }
 
-// Wait for the DOM to be fully loaded
-document.addEventListener('DOMContentLoaded', () => {
-    // Fixed path to use relative path from the HTML file
+// Function to fetch ship data from API
+function fetchShipData() {
+    // Update the last update time in the legend
+    const updateTimeElement = document.getElementById('update-time');
+    if (updateTimeElement) {
+        const now = new Date();
+        updateTimeElement.textContent = now.toLocaleTimeString();
+    }
+    
     fetch('data/ships.json')
         .then(response => response.json())
         .then(data => {
-            displayShips(data);
+            updateShips(data);
         })
         .catch(error => console.error('Error loading ships data:', error));
+}
+
+// Wait for the DOM to be fully loaded
+document.addEventListener('DOMContentLoaded', () => {
+    // Set up the legend
+    setupLegend();
+    
+    // Initial data fetch
+    fetchShipData();
+    
+    // Set up periodic data updates (every 30 seconds)
+    setInterval(fetchShipData, 30000);
+    
+    // Add a status message
+    console.log('Map initialized. Ship data will refresh every 30 seconds.');
 });

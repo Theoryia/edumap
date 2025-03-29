@@ -1,0 +1,148 @@
+/* Dark theme dashboard styles */
+:root {
+    --bg-dark: #121212;
+    --bg-card: #1e1e1e;
+    --bg-card-hover: #262626;
+    --text-light: #e0e0e0;
+    --text-muted: #a0a0a0;
+    --border-color: #333333;
+    --accent-color: #1e88e5;
+    --card-radius: 8px;
+    --card-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Base styles */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+    overflow: hidden;
+}
+
+/* Dashboard layout */
+.dashboard {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 16px;
+    height: 100vh;
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+/* Main map card */
+.main-card {
+    background-color: var(--bg-card);
+    border-radius: var(--card-radius);
+    box-shadow: var(--card-shadow);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.card-header {
+    padding: 12px 16px;
+    display: flex;
+    justify-content: flex-end;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.fullscreen-btn {
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.fullscreen-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.card-content {
+    flex: 1;
+    position: relative;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+}
+
+/* Right side visualization cards */
+.viz-cards {
+    display: grid;
+    grid-template-rows: repeat(4, 1fr);
+    gap: 16px;
+    height: 100%;
+}
+
+.viz-card {
+    background-color: var(--bg-card);
+    border-radius: var(--card-radius);
+    box-shadow: var(--card-shadow);
+    transition: background-color 0.2s;
+}
+
+.viz-card:hover {
+    background-color: var(--bg-card-hover);
+}
+
+/* Leaflet dark theme overrides */
+.leaflet-container {
+    background: #303030 !important;
+}
+
+.leaflet-tile-pane {
+    filter: brightness(0.8) grayscale(0.2) contrast(1.1);
+}
+
+.leaflet-control-zoom {
+    display: none; /* Hide default zoom controls */
+}
+
+.leaflet-control-attribution {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    color: var(--text-muted) !important;
+}
+
+/* Ship info popup styling */
+.ship-info {
+    padding: 6px 8px;
+    background: var(--bg-card);
+    color: var(--text-light);
+    box-shadow: var(--card-shadow);
+    border-radius: 5px;
+}
+
+/* Legend styling */
+.legend {
+    line-height: 18px;
+    color: var(--text-light);
+    background: var(--bg-card);
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.legend i {
+    width: 18px;
+    height: 18px;
+    float: left;
+    margin-right: 8px;
+    opacity: 0.8;
+}
+
+/* Fullscreen mode adjustments */
+#map-container:fullscreen {
+    padding: 0;
+    background-color: var(--bg-dark);
+}
+
+#map-container:fullscreen #map {
+    height: 100vh;
+}
