@@ -93,6 +93,75 @@ body, html {
     background-color: var(--bg-card-hover);
 }
 
+/* Viz card title styling */
+.viz-card-title {
+    margin: 0;
+    padding: 12px 16px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--text-light);
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Berth status container */
+.berth-status-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 10px;
+    padding: 12px;
+    height: calc(100% - 70px);
+}
+
+/* Berth status buttons */
+.berth-status-button {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    border-radius: var(--card-radius);
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.berth-status-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+}
+
+.berth-status-button.bad {
+    background-color: #e74c3c;
+    border: 1px solid #c0392b;
+}
+
+.berth-status-button.excellent {
+    background-color: #556dc2;
+    border: 1px solid #3d4e8b;
+}
+
+.berth-status-button.good {
+    background-color: #5aa443;
+    border: 1px solid #35962c;
+}
+
+.berth-status-button.mediocre {
+    background-color: #c99b0f;
+    border: 1px solid #bc8f08;
+}
+
+.berth-name {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 5px;
+}
+
+.berth-status {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
 /* Leaflet dark theme overrides */
 .leaflet-container {
     background: #303030 !important;
