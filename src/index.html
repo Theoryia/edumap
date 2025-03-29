@@ -20,6 +20,7 @@
     <div class="dashboard">
         <!-- Left side - Map Card -->
         <div class="main-card">
+            <h3 class="viz-card-title">Harbour Map</h3>
             <div class="card-header">
                 <div class="fullscreen-btn" id="fullscreen-btn">
                     <i class="fas fa-expand"></i>
@@ -32,27 +33,30 @@
         
         <!-- Right side - Visualization Cards -->
         <div class="viz-cards">
+            <!-- AQI Status Card -->
             <div class="viz-card">
                 <h3 class="viz-card-title">AQI Status</h3>
                 <div class="berth-status-container">
-                    <div class="berth-status-button box-shadow">
+                    <div class="berth-status-button mediocre">
                         <span class="berth-name">Berth 5</span>
                         <span class="berth-status">Mediocre</span>
                     </div>
                     <div class="berth-status-button mediocre">
                         <span class="berth-name">Berth 4</span>
-                        <span class="berth-status">Medicore</span>
+                        <span class="berth-status">Mediocre</span>
                     </div>
                     <div class="berth-status-button good">
                         <span class="berth-name">Berth 2</span>
                         <span class="berth-status">Good</span>
                     </div>
                     <div class="berth-status-button excellent">
-                        <span class="berth-name">Berth 7</span>
+                        <span class="berth-name">MEGCP</span>
                         <span class="berth-status">Excellent</span>
                     </div>
                 </div>
             </div>
+            
+            <!-- CO2 Status Card -->
             <div class="viz-card">
                 <h3 class="viz-card-title">CO2 Status (ppm)</h3>
                 <div class="berth-status-container">
@@ -69,16 +73,56 @@
                         <span class="berth-status">419</span>
                     </div>
                     <div class="berth-status-button excellent">
-                        <span class="berth-name">Berth 7</span>
+                        <span class="berth-name">MEGCP</span>
                         <span class="berth-status">259</span>
                     </div>
                 </div>
             </div>
+
+            <!-- PM Smaller 2.5 Microns than Status Card -->
             <div class="viz-card">
-                <!-- Future visualization 3 -->
+                <h3 class="viz-card-title">PM Smaller Than 2.5 Microns</h3>
+                <div class="berth-status-container">
+                    <div class="berth-status-button good">
+                        <span class="berth-name">Berth 5</span>
+                        <span class="berth-status">48</span>
+                    </div>
+                    <div class="berth-status-button bad">
+                        <span class="berth-name">Berth 4</span>
+                        <span class="berth-status">746</span>
+                    </div>
+                    <div class="berth-status-button mediocre">
+                        <span class="berth-name">Berth 2</span>
+                        <span class="berth-status">59</span>
+                    </div>
+                    <div class="berth-status-button excellent">
+                        <span class="berth-name">MEGCP</span>
+                        <span class="berth-status">17</span>
+                    </div>
+                </div>
             </div>
+            
+            <!-- Third Card -->
             <div class="viz-card">
-                <!-- Future visualization 4 -->
+                <h3 class="viz-card-title">Port Activity</h3>
+                <div class="berth-status-container">
+                    <div class="berth-status-button good">
+                        <span class="berth-name">Arrivals</span>
+                        <span class="berth-status">5 Ships</span>
+                    </div>
+                    <div class="berth-status-button good">
+                        <span class="berth-name">Departures</span>
+                        <span class="berth-status">3 Ships</span>
+                    </div>
+                    <div class="berth-status-button good">
+                        <span class="berth-name">Scheduled</span>
+                        <span class="berth-status">8 Ships</span>
+                    </div>
+                    <div class="berth-status-button good">
+                        <span class="berth-name">At Berth</span>
+                        <span class="berth-status">4 Ships</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

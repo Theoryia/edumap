@@ -1,6 +1,6 @@
 // Initialize the map centered on Portsmouth port coordinates with disabled interactions
 const map = L.map('map', {
-    center: [50.80988833244207, -1.0990640051937008],
+    center: [50.811864632873956, -1.0974481520177604],
     zoom: 30, // Just a placeholder, actual zoom set in setView
     dragging: true,
     zoomControl: false,
@@ -9,7 +9,7 @@ const map = L.map('map', {
     touchZoom: false,
     keyboard: false,
     boxZoom: false
-}).setView([50.80988833244207, -1.0990640051937008], 15.5);
+}).setView([50.811864632873956, -1.0974481520177604], 15.5);
 
 // Create custom panes with specific z-index values to control layering
 map.createPane('ships');
@@ -30,7 +30,8 @@ const shipMarkers = new Map(); // Using a Map to store markers by ship name
 const berthLocations = {
     'Berth 4': [50.8112080, -1.0968130],
     'Berth 2': [50.8113134, -1.0945468],
-    'Berth 5': [50.8136430, -1.0928250]
+    'Berth 5': [50.8136430, -1.0928250],
+    'MEGCP': [50.8106950, -1.0875830]
 };
 
 // Create berth markers
@@ -213,10 +214,6 @@ function updateShips(ships) {
 
 // Function to update berth status indicators based on ship data
 function updateBerthStatus(ships) {
-    // Get all berth status buttons
-    const berthButtons = document.querySelectorAll('.berth-status-button');
-    if (!berthButtons.length) return; // Skip if visualization isn't on page
-    
     // Extract berth occupancy from ship data
     const occupiedBerths = {};
     
@@ -233,6 +230,10 @@ function updateBerthStatus(ships) {
             }
         }
     });
+    
+    // Update ONLY the berth occupancy buttons in the dedicated berth status card
+    const berthButtons = document.querySelectorAll('.berth-status-container .berth-status-button');
+    if (!berthButtons.length) return; // Skip if visualization isn't on page
     
     // Update the berth status buttons in the visualization
     berthButtons.forEach(button => {
@@ -288,7 +289,6 @@ function setupLegend() {
             <div style="background-color: #ff5533; width: 5px; height: 5px; border-radius: 50%; border: 2px solid white; position: relative; z-index: 0;"></div>
             <span style="margin-left: 8px;">Berths</span>
             </div>
-            <p>Ship size is proportional to icon size</p>
             <p>Last update: <span id="update-time">-</span></p>
         `;
         return div;
@@ -349,8 +349,8 @@ function fetchShipData() {
             // Update the map with ships
             updateShips(shipsArray);
             
-            // Update berth status visualization if it exists
-            updateBerthStatus(shipsArray);
+            // Note: Removed berth status update as per request
+            // The AQI and CO2 buttons remain hardcoded in the HTML
         })
         .catch(error => {
             console.error('Error loading ships data:', error);
@@ -360,7 +360,7 @@ function fetchShipData() {
                 .then(data => {
                     console.log('Using fallback data source');
                     updateShips(data);
-                    updateBerthStatus(data);
+                    // Note: Removed berth status update as per request
                 })
                 .catch(fallbackError => console.error('Fallback data also failed:', fallbackError));
         });
@@ -375,7 +375,7 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchShipData();
     
     // Set up periodic data updates (every 30 seconds)
-    setInterval(fetchShipData, 1000);
+    setInterval(fetchShipData, 10000);
     
     // Add a status message
     console.log('Map initialized. Ship data will refresh every 30 seconds.');
